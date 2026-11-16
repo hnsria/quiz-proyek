@@ -1,0 +1,672 @@
+/* ==========================================================================
+   1. DESIGN TOKENS & CRYSTAL CLEAR LIQUID GLASS
+   ========================================================================== */
+:root {
+    --bg-primary: #F8F9FB;
+    --bg-ambient: radial-gradient(circle at 12% 15%, rgba(0, 113, 227, 0.08), transparent 42%),
+                  radial-gradient(circle at 88% 82%, rgba(90, 200, 250, 0.10), transparent 48%),
+                  #FFFFFF;
+    --bg-secondary: rgba(255, 255, 255, 0.28);
+    --bg-glass: rgba(255, 255, 255, 0.22);
+    --text-primary: #1D1D1F;
+    --text-secondary: #515154;
+    --accent: #0071E3;
+    --accent-hover: #0077ED;
+    --border-color: rgba(255, 255, 255, 0.75);
+    --border-subtle: rgba(0, 0, 0, 0.06);
+    --glass-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+    --shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.04);
+    --shadow-hover: 0 18px 40px rgba(0, 0, 0, 0.08);
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #060709;
+        --bg-ambient: radial-gradient(circle at 15% 15%, rgba(41, 151, 255, 0.14), transparent 42%),
+                      radial-gradient(circle at 85% 80%, rgba(100, 210, 255, 0.09), transparent 48%),
+                      #050608;
+        --bg-secondary: rgba(255, 255, 255, 0.025);
+        --bg-glass: rgba(255, 255, 255, 0.018);
+        --text-primary: #F5F5F7;
+        --text-secondary: #A1A1A6;
+        --accent: #2997FF;
+        --accent-hover: #40A2FF;
+        --border-color: rgba(255, 255, 255, 0.16);
+        --border-subtle: rgba(255, 255, 255, 0.08);
+        --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+        --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.35);
+        --shadow-hover: 0 20px 44px rgba(0, 0, 0, 0.55);
+    }
+}
+
+/* ==========================================================================
+   2. RESET, SCROLLBAR & TYPOGRAPHY
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(134, 134, 139, 0.3);
+    border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(134, 134, 139, 0.6);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
+    background: var(--bg-ambient);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* ==========================================================================
+   3. LAYOUT: CONTAINER, AUTO-HIDE NAVBAR, FLOATING DOCK & FOOTER
+   ========================================================================== */
+.container {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.main-content {
+    flex: 1;
+    padding-top: 120px;
+    padding-bottom: 96px;
+}
+
+/* Navbar (Menghilang ke atas saat di-scroll) */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--bg-glass);
+    backdrop-filter: blur(22px) saturate(190%);
+    -webkit-backdrop-filter: blur(22px) saturate(190%);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--glass-highlight);
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+}
+
+.navbar.header-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.navbar-inner {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand-logo {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--accent);
+}
+
+/* Floating Icon Dock di Kanan (Muncul saat scroll) */
+.floating-dock {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%) translateX(80px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 120;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 99px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--glass-highlight), var(--shadow-hover);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+}
+
+.floating-dock.dock-visible {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dock-item {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.dock-item:hover,
+.dock-item.active {
+    background: var(--accent);
+    color: #FFFFFF;
+    transform: scale(1.1);
+    box-shadow: 0 4px 14px rgba(0, 113, 227, 0.35);
+}
+
+/* Tooltip Label di sebelah kiri ikon */
+.dock-item::before {
+    content: attr(data-label);
+    position: absolute;
+    right: 54px;
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--text-primary);
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--glass-highlight), var(--shadow-soft);
+    opacity: 0;
+    transform: translateX(8px);
+    pointer-events: none;
+    transition: all 0.25s ease;
+}
+
+.dock-item:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Sidebar */
+.sidebar {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px) saturate(190%);
+    -webkit-backdrop-filter: blur(20px) saturate(190%);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--glass-highlight), var(--shadow-soft);
+}
+
+/* Footer */
+.footer {
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-glass);
+    backdrop-filter: blur(22px) saturate(190%);
+    -webkit-backdrop-filter: blur(22px) saturate(190%);
+    box-shadow: var(--glass-highlight);
+    padding: 24px 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   4. HERO, GRID & CARD COMPONENTS
+   ========================================================================== */
+.hero-section {
+    max-width: 720px;
+    padding: 48px 0;
+}
+
+.hero-title {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 16px 0 20px;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 36px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.section-header {
+    margin-bottom: 48px;
+    max-width: 640px;
+}
+
+.section-header h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 12px;
+}
+
+.section-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.grid-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: 28px;
+}
+
+/* Card Crystal Liquid Glass */
+.card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px) saturate(190%);
+    -webkit-backdrop-filter: blur(20px) saturate(190%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--glass-highlight), var(--shadow-soft);
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--glass-highlight), var(--shadow-hover);
+}
+
+.card h3 {
+    font-size: 1.25rem;
+    margin: 14px 0 8px;
+    letter-spacing: -0.015em;
+}
+
+.card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Gallery Card */
+.gallery-card {
+    padding: 16px;
+}
+
+.gallery-img-wrapper {
+    width: 100%;
+    height: 220px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--bg-secondary);
+}
+
+.gallery-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.gallery-card:hover .gallery-img-wrapper img {
+    transform: scale(1.04);
+}
+
+.gallery-info {
+    padding: 16px 8px 8px;
+}
+
+/* ==========================================================================
+   5. BUTTONS & BADGES
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 99px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #FFFFFF;
+    box-shadow: 0 4px 16px rgba(0, 113, 227, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: scale(1.03);
+}
+
+.btn-secondary {
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px) saturate(190%);
+    -webkit-backdrop-filter: blur(16px) saturate(190%);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--glass-highlight);
+}
+
+.btn-secondary:hover {
+    transform: scale(1.03);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 99px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px) saturate(190%);
+    -webkit-backdrop-filter: blur(16px) saturate(190%);
+    color: var(--accent);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--glass-highlight);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.contact-link:hover {
+    transform: scale(1.04);
+    border-color: var(--accent);
+}
+
+/* ==========================================================================
+   6. FORMS, INPUT, SELECT, TEXTAREA
+   ========================================================================== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: var(--transition);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.18);
+}
+
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* ==========================================================================
+   7. TABLE, ALERT, MODAL, DROPDOWN, PAGINATION, BREADCRUMB, ACCORDION
+   ========================================================================== */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+th {
+    background: var(--bg-secondary);
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
+
+.alert {
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.modal-backdrop.show {
+    display: flex;
+}
+
+.modal-box {
+    background: var(--bg-glass);
+    backdrop-filter: blur(28px) saturate(190%);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    max-width: 480px;
+    width: 90%;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--glass-highlight), var(--shadow-hover);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(24px) saturate(190%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    box-shadow: var(--glass-highlight), var(--shadow-hover);
+    display: none;
+    z-index: 150;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    margin-top: 24px;
+}
+
+.pagination a, .pagination span {
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.pagination .active span {
+    background: var(--accent);
+    color: #FFFFFF;
+}
+
+.breadcrumb {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.breadcrumb li + li::before {
+    content: "/";
+    margin-right: 8px;
+    opacity: 0.5;
+}
+
+.accordion-item {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    overflow: hidden;
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+}
+
+.accordion-header {
+    width: 100%;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.accordion-body {
+    padding: 0 20px 16px;
+    color: var(--text-secondary);
+    font-size: 0.94rem;
+}
+
+/* ==========================================================================
+   8. RESPONSIVE (TABLET & MOBILE)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .main-content {
+        padding-top: 96px;
+        padding-bottom: 64px;
+    }
+
+    .nav-links {
+        gap: 16px;
+    }
+
+    .floating-dock {
+        right: 12px;
+        padding: 8px;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+}
